@@ -2,7 +2,6 @@ import { useState } from "react";
 import { Section } from "./ui/section";
 import { Button } from "./ui/button";
 import { Mail, Phone, MapPin, Send } from "lucide-react";
-import { cn } from "@/lib/utils";
 
 interface ContactSectionProps {
   className?: string;

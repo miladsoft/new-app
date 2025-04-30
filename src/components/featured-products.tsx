@@ -2,7 +2,6 @@ import { useState } from "react";
 import { motion } from "framer-motion";
 import { Button } from "./ui/button";
 import { ShoppingBag, Star, Heart, Award, TrendingUp } from "lucide-react";
-import { cn } from "@/lib/utils";
 import { products } from "./data/products";
 import { useCart } from "@/contexts/cart-context";
 import { Link } from "react-router-dom";

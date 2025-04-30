@@ -3,7 +3,6 @@ import { motion, AnimatePresence } from "framer-motion";
 import { X, Minus, Plus, ShoppingBag, CreditCard } from "lucide-react";
 import { useCart } from "@/contexts/cart-context";
 import { Button } from "../ui/button";
-import { cn } from "@/lib/utils";
 
 export function CartDrawer() {
   const { 
