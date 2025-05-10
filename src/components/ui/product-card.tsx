@@ -1,17 +1,15 @@
 import { motion } from "framer-motion";
-import { ShoppingBag, Star } from "lucide-react";
+import { ArrowRight, Star } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { Button } from "./button";
 import { useState } from "react";
-import { useCart } from "@/contexts/cart-context";
 import { Link } from "react-router-dom";
 
 export interface ProductProps {
   id: string;
   name: string;
   category: string;
-  price: number;
-  originalPrice?: number;
+  price: number; // Kept for data structure compatibility
+  originalPrice?: number; // Kept for data structure compatibility
   imageSrc: string;
   isNew?: boolean;
   isFeatured?: boolean;
@@ -25,14 +23,7 @@ interface ProductCardProps {
 }
 
 export function ProductCard({ product, className, index = 0 }: ProductCardProps) {
-  const { addItem } = useCart();
   const [isHovered, setIsHovered] = useState(false);
-  
-  const handleAddToCart = (e: React.MouseEvent) => {
-    e.preventDefault();
-    e.stopPropagation();
-    addItem(product, 1);
-  };
   
   return (
     <motion.div
@@ -65,7 +56,7 @@ export function ProductCard({ product, className, index = 0 }: ProductCardProps)
             animate={{ scale: isHovered ? 1.05 : 1 }}
           />
           
-          {/* Quick add button */}
+          {/* View details button */}
           <motion.div 
             className="absolute bottom-0 left-0 right-0 flex justify-center p-4"
             initial={{ opacity: 0, y: 20 }}
@@ -75,13 +66,12 @@ export function ProductCard({ product, className, index = 0 }: ProductCardProps)
             }}
             transition={{ duration: 0.3 }}
           >
-            <Button 
-              onClick={handleAddToCart}
-              className="w-full max-w-[200px] rounded-full shadow-lg"
+            <div 
+              className="bg-background/90 backdrop-blur-sm text-primary font-medium px-6 py-2 rounded-full shadow-lg flex items-center justify-center gap-2 transition-transform hover:scale-105"
             >
-              <ShoppingBag className="mr-2 h-4 w-4" />
-              Add to Cart
-            </Button>
+              View Details
+              <ArrowRight className="h-4 w-4" />
+            </div>
           </motion.div>
           
           {/* Product badges */}
@@ -93,7 +83,7 @@ export function ProductCard({ product, className, index = 0 }: ProductCardProps)
             )}
             {product.originalPrice && (
               <span className="rounded-full bg-destructive px-2.5 py-1 text-xs font-semibold text-destructive-foreground">
-                Sale
+                Featured
               </span>
             )}
           </div>
@@ -113,16 +103,10 @@ export function ProductCard({ product, className, index = 0 }: ProductCardProps)
           <p className="text-sm text-muted-foreground">{product.category}</p>
           
           <div className="flex items-center justify-between pt-2">
-            <div className="flex items-center">
-              <span className="font-semibold">
-                ${product.price}
-              </span>
-              {product.originalPrice && (
-                <span className="ml-2 text-sm text-muted-foreground line-through">
-                  ${product.originalPrice}
-                </span>
-              )}
-            </div>
+            <p className="text-sm text-muted-foreground line-clamp-2">
+              {product.description?.substring(0, 80)}
+              {product.description && product.description.length > 80 ? "..." : ""}
+            </p>
           </div>
         </div>
 

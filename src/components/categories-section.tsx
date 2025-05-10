@@ -1,6 +1,8 @@
 import { Section } from "./ui/section";
 import { cn } from "@/lib/utils";
 import { ArrowRight } from "lucide-react";
+import { Link } from "react-router-dom";
+import { motion } from "framer-motion";
 
 interface CategoryCardProps {
   name: string;
@@ -12,8 +14,8 @@ interface CategoryCardProps {
 
 function CategoryCard({ name, description, imageUrl, href, className }: CategoryCardProps) {
   return (
-    <a
-      href={href}
+    <Link
+      to={href}
       className={cn(
         "group relative block overflow-hidden rounded-lg h-[300px] md:h-[350px] transition-all",
         className
@@ -33,7 +35,7 @@ function CategoryCard({ name, description, imageUrl, href, className }: Category
           <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
         </span>
       </div>
-    </a>
+    </Link>
   );
 }
 
@@ -42,63 +44,92 @@ const categories = [
     name: "Living Room",
     description: "Create a welcoming space with our stylish sofas, coffee tables, and accent pieces.",
     imageUrl: "https://images.unsplash.com/photo-1556228453-efd6c1ff04f6?w=500&auto=format&fit=crop&q=60",
-    href: "#living-room"
+    href: "/category/living-room"
   },
   {
     name: "Bedroom",
     description: "Transform your bedroom into a peaceful retreat with our elegant beds and storage solutions.",
     imageUrl: "https://images.unsplash.com/photo-1616594039964-ae9021a400a0?w=500&auto=format&fit=crop&q=60",
-    href: "#bedroom"
+    href: "/category/bedroom"
   },
   {
     name: "Dining Room",
     description: "Elevate your dining experience with our beautifully crafted tables and chairs.",
     imageUrl: "https://images.unsplash.com/photo-1595526051245-4506e0005bd0?w=500&auto=format&fit=crop&q=60",
-    href: "#dining-room"
+    href: "/category/dining-room"
   },
   {
     name: "Office",
     description: "Design a productive workspace with our ergonomic and stylish office furniture.",
     imageUrl: "https://images.unsplash.com/photo-1593642702821-c8da6771f0c6?w=500&auto=format&fit=crop&q=60",
-    href: "#office"
+    href: "/category/office"
   },
   {
     name: "Outdoor",
     description: "Extend your living space outdoors with our weather-resistant and comfortable furniture.",
     imageUrl: "https://images.unsplash.com/photo-1600210492493-0946911123ea?w=500&auto=format&fit=crop&q=60",
-    href: "#outdoor"
+    href: "/category/outdoor"
   },
   {
     name: "Accessories",
     description: "Complete your spaces with our carefully selected home accessories and decor pieces.",
     imageUrl: "https://images.unsplash.com/photo-1556228720-195a672e8a03?w=500&auto=format&fit=crop&q=60",
-    href: "#accessories"
+    href: "/category/accessories"
   }
 ];
 
 interface CategoriesSectionProps {
   className?: string;
+  isHomepage?: boolean;
 }
 
-export function CategoriesSection({ className }: CategoriesSectionProps) {
+export function CategoriesSection({ className, isHomepage = true }: CategoriesSectionProps) {
+  // Animation variants
+  const containerVariants = {
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: {
+        staggerChildren: 0.1
+      }
+    }
+  };
+
+  const itemVariants = {
+    hidden: { opacity: 0, y: 30 },
+    visible: {
+      opacity: 1,
+      y: 0,
+      transition: { 
+        duration: 0.6,
+        ease: "easeOut"
+      }
+    }
+  };
+
   return (
     <Section 
       id="categories"
-      title="Browse by Category" 
-      subtitle="Explore our wide range of furniture collections for every room in your home."
+      title={isHomepage ? "Browse by Category" : undefined}
+      subtitle={isHomepage ? "Explore our elegant furniture collections for every room in your home." : undefined}
       className={className}
     >
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {categories.map((category) => (
-          <CategoryCard
-            key={category.name}
-            name={category.name}
-            description={category.description}
-            imageUrl={category.imageUrl}
-            href={category.href}
-          />
+      <motion.div 
+        className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
+        variants={containerVariants}
+        initial="hidden"
+        animate="visible"
+      >        {categories.map((category) => (
+          <motion.div key={category.name} variants={itemVariants}>
+            <CategoryCard
+              name={category.name}
+              description={category.description}
+              imageUrl={category.imageUrl}
+              href={category.href}
+            />
+          </motion.div>
         ))}
-      </div>
+      </motion.div>
     </Section>
   );
 }

@@ -1,10 +1,9 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Search, X } from "lucide-react";
+import { Search, X, ArrowRight, Tag } from "lucide-react";
 import { Button } from "./ui/button";
 import { products } from "./data/products";
 import { ProductProps } from "./ui/product-card";
-import { useCart } from "@/contexts/cart-context";
 import { Link } from "react-router-dom";
 
 interface SearchDialogProps {
@@ -12,10 +11,11 @@ interface SearchDialogProps {
   onClose: () => void;
 }
 
-export function SearchDialog({ isOpen, onClose }: SearchDialogProps) {
-  const [searchQuery, setSearchQuery] = useState("");
+// Extract unique categories for search suggestions
+const categories = Array.from(new Set(products.map(product => product.category)));
+
+export function SearchDialog({ isOpen, onClose }: SearchDialogProps) {  const [searchQuery, setSearchQuery] = useState("");
   const [searchResults, setSearchResults] = useState<ProductProps[]>([]);
-  const { addItem } = useCart();
 
   // Handle escape key press to close dialog
   useEffect(() => {
@@ -49,15 +49,12 @@ export function SearchDialog({ isOpen, onClose }: SearchDialogProps) {
       return;
     }
 
-    // Search in product names, descriptions, and categories
-    const results = products.filter((product) => {
-      const query = searchQuery.toLowerCase();
-      return (
-        product.name.toLowerCase().includes(query) ||
-        (product.description && product.description.toLowerCase().includes(query)) ||
-        product.category.toLowerCase().includes(query)
-      );
-    });
+    // Search in name, category, and description
+    const results = products.filter(product => 
+      product.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      product.category.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      (product.description && product.description.toLowerCase().includes(searchQuery.toLowerCase()))
+    );
 
     setSearchResults(results);
   }, [searchQuery]);
@@ -70,128 +67,144 @@ export function SearchDialog({ isOpen, onClose }: SearchDialogProps) {
     }
   }, [isOpen]);
 
-  // Handle adding item to cart
-  const handleAddToCart = (product: ProductProps, e: React.MouseEvent) => {
-    e.preventDefault();
-    e.stopPropagation();
-    addItem(product, 1);
-    // Optional: show confirmation or keep search dialog open
-  };
+  // Get filtered categories based on search query
+  const filteredCategories = useMemo(() => {
+    if (!searchQuery.trim()) return categories;
+    
+    return categories.filter(category => 
+      category.toLowerCase().includes(searchQuery.toLowerCase())
+    );
+  }, [searchQuery]);
 
   return (
     <AnimatePresence>
       {isOpen && (
-        <div className="fixed inset-0 z-50 flex items-start justify-center">
-          {/* Backdrop */}
+        <motion.div
+          className="fixed inset-0 bg-background/80 backdrop-blur-sm z-50 flex items-start justify-center"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          onClick={onClose}
+        >
           <motion.div
-            className="fixed inset-0 bg-background/80 backdrop-blur-sm"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            onClick={onClose}
-          />
-
-          {/* Dialog */}
-          <motion.div
-            className="fixed top-[10%] z-50 flex w-full max-w-3xl flex-col rounded-lg border bg-background shadow-lg"
+            className="bg-background border shadow-lg w-full max-w-3xl mt-20 rounded-lg overflow-hidden"
             initial={{ opacity: 0, y: -20 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -20 }}
             transition={{ duration: 0.2 }}
+            onClick={e => e.stopPropagation()}
           >
-            {/* Search header */}
-            <div className="flex items-center border-b px-4 py-3">
-              <Search className="mr-2 h-5 w-5 text-muted-foreground" />
-              <input
+            {/* Search input */}
+            <div className="p-4 border-b flex items-center">
+              <Search className="h-5 w-5 text-muted-foreground mr-2" />              <input
                 type="text"
-                className="flex-1 border-0 bg-transparent text-lg focus:outline-none focus:ring-0"
-                placeholder="Search for products..."
+                placeholder="Search for collections, products..."
+                className="flex-1 bg-transparent border-none outline-none text-lg"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 autoFocus
               />
               <Button
                 variant="ghost"
-                size="sm"
+                size="icon"
                 onClick={onClose}
-                className="ml-2 h-8 w-8 p-0"
-                aria-label="Close search"
               >
                 <X className="h-5 w-5" />
               </Button>
             </div>
-
+            
             {/* Search results */}
-            <div className="max-h-[70vh] overflow-y-auto p-4">
-              {searchResults.length > 0 ? (
-                <div className="space-y-4">
-                  <h3 className="mb-4 font-medium text-muted-foreground">
-                    {searchResults.length} result{searchResults.length !== 1 && "s"} found
-                  </h3>
-                  <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-                    {searchResults.map((product) => (
-                      <motion.div
-                        key={product.id}
-                        className="group overflow-hidden rounded-md border transition-all duration-300 hover:border-primary/50 hover:shadow-md"
-                        initial={{ opacity: 0 }}
-                        animate={{ opacity: 1 }}
-                        transition={{ duration: 0.2 }}
+            <div className="max-h-[70vh] overflow-y-auto p-2">
+              {searchQuery.trim() === "" ? (
+                <div className="p-4">
+                  <h3 className="text-sm font-medium text-muted-foreground mb-3">Browse Collections</h3>
+                  <div className="grid grid-cols-2 md:grid-cols-3 gap-2">
+                    {categories.map((category) => (
+                      <Link
+                        key={category}
+                        to={`/category/${category.toLowerCase().replace(/\s+/g, '-')}`}
+                        className="flex items-center gap-2 p-3 rounded-lg hover:bg-accent/20 transition-colors"
+                        onClick={onClose}
                       >
-                        <Link 
-                          to={`/product/${product.id}`}
-                          className="flex overflow-hidden"
-                          onClick={onClose}
-                        >
-                          <div className="h-24 w-24 flex-shrink-0 overflow-hidden">
-                            <img
-                              src={product.imageSrc}
-                              alt={product.name}
-                              className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
-                            />
-                          </div>
-                          <div className="flex flex-1 flex-col justify-between p-3">
-                            <div>
-                              <h4 className="font-medium group-hover:text-primary transition-colors duration-200">{product.name}</h4>
-                              <p className="text-sm text-muted-foreground">{product.category}</p>
-                            </div>
-                            <div className="flex items-center justify-between">
-                              <span className="font-semibold">
-                                ${product.price.toLocaleString()}
-                              </span>
-                              <Button
-                                size="sm"
-                                variant="outline"
-                                className="h-8"
-                                onClick={(e) => handleAddToCart(product, e)}
-                              >
-                                Add to cart
-                              </Button>
-                            </div>
-                          </div>
-                        </Link>
-                      </motion.div>
+                        <Tag className="h-4 w-4 text-primary" />
+                        <span>{category}</span>
+                      </Link>
                     ))}
                   </div>
                 </div>
-              ) : searchQuery.trim() !== "" ? (
-                <div className="py-12 text-center">
-                  <h3 className="mb-2 text-lg font-semibold">No products found</h3>
-                  <p className="text-muted-foreground">
-                    We couldn't find any products matching "{searchQuery}"
-                  </p>
-                </div>
               ) : (
-                <div className="py-12 text-center">
-                  <Search className="mx-auto h-12 w-12 text-muted-foreground/50" />
-                  <h3 className="mt-4 text-lg font-semibold">Search our collection</h3>
-                  <p className="text-muted-foreground">
-                    Start typing to find furniture by name, category, or description
-                  </p>
-                </div>
+                <>
+                  {/* Category results */}
+                  {filteredCategories.length > 0 && (
+                    <div className="p-4 border-b">
+                      <h3 className="text-sm font-medium text-muted-foreground mb-2">Collections</h3>
+                      <div className="grid grid-cols-2 gap-2">
+                        {filteredCategories.map((category) => (
+                          <Link
+                            key={category}
+                            to={`/category/${category.toLowerCase().replace(/\s+/g, '-')}`}
+                            className="flex items-center gap-2 p-2 rounded-lg hover:bg-accent/20 transition-colors"
+                            onClick={onClose}
+                          >
+                            <Tag className="h-4 w-4 text-primary" />
+                            <span>{category}</span>
+                          </Link>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+                  
+                  {/* Product results */}
+                  {searchResults.length > 0 ? (
+                    <div className="p-4">
+                      <h3 className="text-sm font-medium text-muted-foreground mb-3">Products</h3>
+                      <div className="space-y-4">
+                        {searchResults.slice(0, 5).map((product) => (
+                          <Link
+                            key={product.id}
+                            to={`/product/${product.id}`}
+                            className="flex items-center gap-4 p-2 hover:bg-accent/20 rounded-lg transition-colors"
+                            onClick={onClose}
+                          >
+                            <div className="w-16 h-16 rounded bg-muted flex-shrink-0 overflow-hidden">
+                              <img 
+                                src={product.imageSrc} 
+                                alt={product.name}
+                                className="w-full h-full object-cover" 
+                              />
+                            </div>
+                            <div className="flex-1 min-w-0">
+                              <h4 className="font-medium truncate">{product.name}</h4>
+                              <p className="text-sm text-muted-foreground">{product.category}</p>
+                            </div>
+                            <ArrowRight className="h-4 w-4 text-muted-foreground" />
+                          </Link>
+                        ))}
+                        
+                        {searchResults.length > 5 && (
+                          <p className="text-sm text-center text-muted-foreground pt-2 border-t">
+                            + {searchResults.length - 5} more results
+                          </p>
+                        )}
+                      </div>
+                    </div>
+                  ) : (
+                    <div className="p-8 text-center">
+                      <p className="text-muted-foreground">No products found matching "{searchQuery}"</p>
+                    </div>
+                  )}
+                </>
               )}
             </div>
+            
+            {/* Quick search tips */}
+            <div className="p-4 border-t bg-muted/30 text-sm text-muted-foreground">
+              <p>
+                Search tips: Try searching by product name, collection name, or material
+              </p>
+            </div>
           </motion.div>
-        </div>
+        </motion.div>
       )}
     </AnimatePresence>
   );

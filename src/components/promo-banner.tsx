@@ -18,12 +18,15 @@ export function PromoBanner({ className }: PromoBannerProps) {
     )}>
       <div className="container mx-auto">
         <p className="text-sm font-medium">
-          Spring Sale: Enjoy 25% off all living room furniture until May 15th. Use code <span className="font-bold">SPRING25</span>
+          New Collection Showcase — Explore our latest additions to each category
+          <a href="/category/living-room" className="underline underline-offset-2 ml-2 font-semibold">
+            View Now
+          </a>
         </p>
         <button 
-          onClick={() => setIsVisible(false)} 
-          className="absolute right-4 top-1/2 transform -translate-y-1/2 text-primary-foreground/80 hover:text-primary-foreground"
-          aria-label="Close promotion banner"
+          onClick={() => setIsVisible(false)}
+          className="absolute right-4 top-1/2 transform -translate-y-1/2 p-1 opacity-70 hover:opacity-100 transition-opacity"
+          aria-label="Close banner"
         >
           <X className="h-4 w-4" />
         </button>

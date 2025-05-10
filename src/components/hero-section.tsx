@@ -1,10 +1,11 @@
-import { Button } from "./ui/button";
 import { ArrowRight } from "lucide-react";
+import { Link } from "react-router-dom";
+import { motion } from "framer-motion";
 
 export function HeroSection() {
   return (
     <section className="relative bg-background py-20 md:py-32 overflow-hidden">
-      {/* Background image - you could replace this with an actual image */}
+      {/* Background image overlay */}
       <div className="absolute inset-0 bg-muted/30">
         <div 
           className="absolute inset-0 bg-cover bg-center"
@@ -17,23 +18,45 @@ export function HeroSection() {
       
       <div className="container mx-auto px-4 relative z-10">
         <div className="max-w-3xl">
-          <h5 className="text-primary font-medium mb-4 tracking-wide">Premium Furniture Collection</h5>
-          <h1 className="text-4xl md:text-6xl font-bold mb-6 tracking-tight">
-            Transform Your Space with Elegant Design
-          </h1>
-          <p className="text-lg text-muted-foreground mb-8 max-w-2xl">
-            Discover our curated collection of beautifully crafted furniture 
-            pieces that blend style, comfort, and functionality for every room in your home.
-          </p>
-          <div className="flex flex-col sm:flex-row gap-4">
-            <Button size="lg" className="px-8">
-              Shop Collection
-            </Button>
-            <Button size="lg" variant="outline" className="group">
-              View Catalog
-              <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
-            </Button>
-          </div>
+          <motion.h1 
+            className="text-4xl md:text-5xl lg:text-6xl font-bold mb-6"
+            initial={{ opacity: 0, y: -20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.7 }}
+          >
+            Discover Elegant Furniture Collections
+          </motion.h1>
+          
+          <motion.p 
+            className="text-lg md:text-xl text-muted-foreground mb-8 max-w-xl"
+            initial={{ opacity: 0, y: -20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.7, delay: 0.2 }}
+          >
+            Explore our carefully curated categories of premium furniture designed to transform your spaces into works of art.
+          </motion.p>
+          
+          <motion.div 
+            className="flex flex-wrap gap-4"
+            initial={{ opacity: 0, y: -20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.7, delay: 0.4 }}
+          >
+            <Link 
+              to="/category/living-room" 
+              className="bg-primary text-primary-foreground px-6 py-3 rounded-md font-medium flex items-center gap-2 hover:bg-primary/90 transition-colors"
+            >
+              Browse Collections
+              <ArrowRight className="h-4 w-4" />
+            </Link>
+            
+            <a 
+              href="#about" 
+              className="bg-background border border-input px-6 py-3 rounded-md font-medium hover:bg-accent transition-colors"
+            >
+              Learn More
+            </a>
+          </motion.div>
         </div>
       </div>
     </section>

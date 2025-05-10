@@ -1,5 +1,6 @@
 import { ReactNode } from "react";
-import { cn } from "../../lib/utils";
+import { cn } from "@/lib/utils";
+import { motion } from "framer-motion";
 
 interface SectionProps {
   id?: string;
@@ -29,19 +30,33 @@ export function Section({
     >
       <div className={cn("container px-4 mx-auto max-w-7xl", containerClassName)}>
         {(title || subtitle) && (
-          <div className="mb-8 md:mb-12 text-center max-w-3xl mx-auto">
+          <div className="mb-10 md:mb-16 text-center max-w-3xl mx-auto">
             {title && (
-              <h2 className={cn("text-2xl md:text-3xl font-semibold tracking-tight mb-3", titleClassName)}>
+              <motion.h2 
+                className={cn("text-3xl md:text-4xl font-bold mb-4 relative inline-block", titleClassName)}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.7 }}
+              >
                 {title}
-              </h2>
+                <span className="absolute -bottom-2 left-1/4 right-1/4 h-1 bg-primary rounded-full"></span>
+              </motion.h2>
             )}
             {subtitle && (
-              <p className={cn("text-muted-foreground", subtitleClassName)}>
+              <motion.p 
+                className={cn("text-lg text-muted-foreground", subtitleClassName)}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.7, delay: 0.2 }}
+              >
                 {subtitle}
-              </p>
+              </motion.p>
             )}
           </div>
         )}
+        
         {children}
       </div>
     </section>
