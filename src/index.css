@@ -10,25 +10,34 @@
 
   color-scheme: light dark;
   
-  /* Light theme (default) colors */
-  --background: oklch(1 0 0);
-  --foreground: oklch(0.145 0 0);
-  --card: oklch(1 0 0);
-  --card-foreground: oklch(0.145 0 0);
-  --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.145 0 0);
-  --primary: oklch(0.25 0.15 250);
-  --primary-foreground: oklch(0.98 0 0);
-  --secondary: oklch(0.96 0 0);
-  --secondary-foreground: oklch(0.2 0 0);
-  --muted: oklch(0.96 0 0);
-  --muted-foreground: oklch(0.53 0 0);
-  --accent: oklch(0.96 0 0);
-  --accent-foreground: oklch(0.2 0 0);
-  --destructive: oklch(0.6 0.24 25);
-  --border: oklch(0.89 0 0);
-  --input: oklch(0.89 0 0);
-  --ring: oklch(0.7 0.15 250);
+  /* Light theme (default) colors with brand colors */
+  --background: #ffffff;
+  --foreground: #333333;
+  --card: #ffffff;
+  --card-foreground: #333333;
+  --popover: #ffffff;
+  --popover-foreground: #333333;
+  --primary: #176c91;
+  --primary-foreground: #ffffff;
+  --secondary: #ea252b;
+  --secondary-foreground: #ffffff;
+  --muted: #f8f9fb;
+  --muted-foreground: #64748b;
+  --accent: #f1f5f9;
+  --accent-foreground: #176c91;
+  --destructive: #ea252b;
+  --destructive-foreground: #ffffff;
+  --border: #e2e8f0;
+  --input: #e2e8f0;
+  --ring: #176c91;
+  
+  /* Brand Colors */
+  --brand-blue: #176c91;
+  --brand-blue-light: #2a89b4;
+  --brand-blue-dark: #0e557a;
+  --brand-red: #ea252b;
+  --brand-red-light: #f24a4f;
+  --brand-red-dark: #c41d22;
   --radius: 0.625rem;
 
   /* Additional variables */
@@ -76,25 +85,25 @@
 }
 
 .dark {
-  /* Dark theme colors with improved contrast */
-  --background: oklch(0.13 0 0);
-  --foreground: oklch(0.95 0 0);
-  --card: oklch(0.18 0 0);
-  --card-foreground: oklch(0.95 0 0);
-  --popover: oklch(0.18 0 0);
-  --popover-foreground: oklch(0.95 0 0);
-  --primary: oklch(0.7 0.2 250);
-  --primary-foreground: oklch(0.1 0 0);
-  --secondary: oklch(0.26 0 0);
-  --secondary-foreground: oklch(0.95 0 0);
-  --muted: oklch(0.26 0 0);
-  --muted-foreground: oklch(0.75 0 0);
-  --accent: oklch(0.26 0 0);
-  --accent-foreground: oklch(0.95 0 0);
-  --destructive: oklch(0.7 0.2 22);
-  --border: oklch(0.6 0 0 / 20%);
-  --input: oklch(0.6 0 0 / 25%);
-  --ring: oklch(0.7 0.2 250 / 80%);
+  /* Dark theme colors with improved contrast and brand colors */
+  --background: #121a24;
+  --foreground: #f8fafc;
+  --card: #1a2942;
+  --card-foreground: #f8fafc;
+  --popover: #1a2942;
+  --popover-foreground: #f8fafc;
+  --primary: #176c91;
+  --primary-foreground: #f8fafc;
+  --secondary: #ea252b;
+  --secondary-foreground: #f8fafc;
+  --muted: #27374d; 
+  --muted-foreground: #cbd5e1;
+  --accent: #1e293b;
+  --accent-foreground: #f8fafc;
+  --destructive: #ea252b;
+  --border: rgba(255, 255, 255, 0.1);
+  --input: rgba(255, 255, 255, 0.15);
+  --ring: rgba(23, 108, 145, 0.8);
 
   /* Additional variables for dark mode */
   --sidebar: oklch(0.18 0 0);

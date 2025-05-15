@@ -1,6 +1,6 @@
-import { Section } from "./ui/section";
 import { cn } from "@/lib/utils";
 import { Star } from "lucide-react";
+import { motion } from "framer-motion";
 
 interface TestimonialProps {
   quote: string;
@@ -12,7 +12,13 @@ interface TestimonialProps {
 
 function Testimonial({ quote, author, position, rating, imageSrc }: TestimonialProps) {
   return (
-    <div className="bg-white rounded-xl p-6 border border-[#176c91]/10 shadow-sm hover:shadow-md transition-shadow duration-300 relative overflow-hidden">
+    <motion.div 
+      className="bg-white rounded-xl p-6 border border-[#176c91]/10 shadow-sm hover:shadow-md transition-shadow duration-300 relative overflow-hidden"
+      initial={{ opacity: 0, y: 20 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true }}
+      transition={{ duration: 0.6 }}
+    >
       {/* Decorative elements */}
       <div className="absolute top-0 right-0 w-16 h-16 bg-gradient-to-bl from-[#176c91]/5 to-transparent -z-10"></div>
       <div className="absolute -bottom-2 -left-2 w-16 h-16 rounded-full bg-[#ea252b]/5 -z-10"></div>
@@ -52,7 +58,7 @@ function Testimonial({ quote, author, position, rating, imageSrc }: TestimonialP
           {position && <div className="text-sm text-gray-500">{position}</div>}
         </div>
       </div>
-    </div>
+    </motion.div>
   );
 }
 
@@ -93,7 +99,7 @@ interface TestimonialsSectionProps {
 
 export function TestimonialsSection({ className }: TestimonialsSectionProps) {
   return (
-    <Section 
+    <section 
       id="testimonials" 
       className={cn("py-16 md:py-24 bg-gradient-to-b from-white to-[#f8f9fb] relative overflow-hidden", className)}
     >
@@ -103,29 +109,56 @@ export function TestimonialsSection({ className }: TestimonialsSectionProps) {
       
       <div className="container px-4 mx-auto">
         <div className="max-w-3xl mx-auto text-center mb-12 md:mb-16">
-          <div className="inline-block mb-3">
+          <motion.div
+            className="inline-block mb-3"
+            initial={{ opacity: 0, y: 10 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.5 }}
+          >
             <span className="bg-[#ea252b] px-5 py-1.5 rounded-full text-white text-sm font-semibold">
               Customer Stories
             </span>
-          </div>
+          </motion.div>
           
-          <h2 className="text-3xl md:text-4xl font-bold mb-4">
+          <motion.h2
+            className="text-3xl md:text-4xl font-bold mb-4"
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6, delay: 0.1 }}
+          >
             What Our <span className="text-[#ea252b]">Customers</span> Say
-          </h2>
+          </motion.h2>
           
-          <div className="h-1.5 w-20 bg-[#176c91] rounded-full mx-auto mb-4"></div>
+          <motion.div
+            className="h-1.5 w-20 bg-[#176c91] rounded-full mx-auto"
+            initial={{ width: 0, opacity: 0 }}
+            whileInView={{ width: 80, opacity: 1 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.7, delay: 0.3 }}
+          />
           
-          <p className="text-gray-600 max-w-2xl mx-auto">
+          <motion.p 
+            className="text-gray-600 max-w-2xl mx-auto mt-4"
+            initial={{ opacity: 0 }}
+            whileInView={{ opacity: 1 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.7, delay: 0.4 }}
+          >
             Hear from our satisfied customers who have transformed their spaces with our furniture collections.
-          </p>
+          </motion.p>
         </div>
-      
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-        {testimonials.map((testimonial, index) => (
-          <Testimonial key={index} {...testimonial} />
-        ))}
+        
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+          {testimonials.map((testimonial, index) => (
+            <Testimonial 
+              key={index} 
+              {...testimonial} 
+            />
+          ))}
+        </div>
       </div>
-      </div>
-    </Section>
+    </section>
   );
 }

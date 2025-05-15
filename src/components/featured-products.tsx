@@ -40,40 +40,45 @@ export function FeaturedProducts() {
     }
   };
 
-  return (
-    <section className="py-24 md:py-32 relative overflow-hidden">
+  return (    <section className="py-24 md:py-32 relative overflow-hidden">
       {/* Decorative background elements */}
-      <div className="absolute inset-0 -z-10 bg-gradient-to-b from-background via-background/98 to-muted/20"></div>
-      <div className="absolute top-1/4 left-0 w-96 h-96 bg-primary/5 rounded-full blur-3xl -z-10"></div>
-      <div className="absolute bottom-1/3 right-0 w-64 h-64 bg-primary/3 rounded-full blur-3xl -z-10"></div>
+      <div className="absolute inset-0 -z-10 bg-white"></div>
+      <div className="absolute inset-0 -z-10 bg-gradient-to-br from-[#176c91]/5 via-transparent to-[#ea252b]/5"></div>
+      <div className="absolute top-1/4 left-0 w-96 h-96 bg-[#176c91]/5 rounded-full blur-3xl -z-10"></div>
+      <div className="absolute bottom-1/3 right-0 w-64 h-64 bg-[#ea252b]/5 rounded-full blur-3xl -z-10"></div>
+      <div className="absolute inset-0 -z-10 opacity-[0.015]"
+        style={{
+          backgroundImage: `url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23176c91' fill-opacity='1'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")`,
+        }}
+      ></div>
       
       <div className="container px-4 md:px-6 mx-auto max-w-7xl">
         {/* Luxury section header */}
         <div className="relative mb-20 flex flex-col space-y-4 items-center text-center">
-          <motion.span 
-            className="text-sm font-medium uppercase tracking-wider text-primary"
+          <motion.div
+            className="inline-block mb-3"
             initial={{ opacity: 0, y: 10 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.6, ease: "easeOut" }}
           >
-            Curated Selection
-          </motion.span>
+            <span className="bg-gradient-to-r from-[#176c91] to-[#176c91] px-5 py-1.5 rounded-full text-white text-sm font-semibold">
+              Featured Collections
+            </span>
+          </motion.div>
           
           <motion.h2 
-            className="text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight"
+            className="text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight mb-2"
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.7, ease: "easeOut", delay: 0.1 }}
           >
-            <span className="bg-clip-text text-transparent bg-gradient-to-r from-foreground to-foreground/70">
-              Masterpiece Collection
-            </span>
+            Masterpiece <span className="text-[#ea252b]">Collection</span>
           </motion.h2>
           
           <motion.div
-            className="h-1 w-24 bg-gradient-to-r from-primary/80 to-primary rounded-full"
+            className="h-1.5 w-24 bg-[#ea252b] rounded-full"
             initial={{ width: 0, opacity: 0 }}
             whileInView={{ width: 96, opacity: 1 }}
             viewport={{ once: true }}
@@ -81,7 +86,7 @@ export function FeaturedProducts() {
           />
           
           <motion.p 
-            className="max-w-[800px] text-muted-foreground mt-4 text-lg md:text-xl"
+            className="max-w-[800px] text-gray-600 mt-6 text-lg md:text-xl"
             initial={{ opacity: 0 }}
             whileInView={{ opacity: 1 }}
             viewport={{ once: true }}

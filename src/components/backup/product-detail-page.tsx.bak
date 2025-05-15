@@ -12,6 +12,9 @@ import {
   Eye,
   ChevronRight,
   Sparkles
+  Eye,
+  ChevronRight,
+  Sparkles
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { products } from "./data/products";
@@ -32,55 +35,70 @@ interface ProductVariant {
   options: string[];
 }
 
-interface ResolvedProductData {
-  details: ProductProps;
-  images: ProductImage[];
-  related: ProductProps[];
-}
-
 export function ProductDetailPage() {
   const { productId } = useParams();
+  
+  // Find the product based on the ID from URL params
+  const product = products.find(p => p.id === productId);
   
   const [selectedColor, setSelectedColor] = useState<string | null>(null);
   const [selectedVariant, setSelectedVariant] = useState<string | null>(null);
   const [activeImage, setActiveImage] = useState(0);
   const [isLoading, setIsLoading] = useState(true);
-  const [resolvedData, setResolvedData] = useState<ResolvedProductData | null>(null);
+  const [relatedProducts, setRelatedProducts] = useState<ProductProps[]>([]);
 
+  // Simulate loading state for better UX
   useEffect(() => {
     setIsLoading(true);
-    setResolvedData(null); // Clear previous data on productId change
-    setActiveImage(0); // Reset active image index
-
-    // Simulate data fetching and processing
+    // Simulate a network request
     const timer = setTimeout(() => {
-      const foundProduct = products.find(p => p.id === productId);
-
-      if (foundProduct) {
-        const images: ProductImage[] = [
-          { src: foundProduct.imageSrc, alt: foundProduct.name },
-          { src: "https://images.unsplash.com/photo-1581539250439-c96689b516dd?q=80&w=800&auto=format&fit=crop", alt: `${foundProduct.name} - Angle 2` },
-          { src: "https://images.unsplash.com/photo-1567538096630-e0c55bd6374c?q=80&w=800&auto=format&fit=crop", alt: `${foundProduct.name} - Angle 3` },
-          { src: "https://images.unsplash.com/photo-1550226891-ef816aed4a98?q=80&w=800&auto=format&fit=crop", alt: `${foundProduct.name} - Detail` },
-        ];
-        
-        const related = products
-          .filter(p => p.category === foundProduct.category && p.id !== foundProduct.id)
-          .slice(0, 4);
-        
-        setResolvedData({
-          details: foundProduct,
-          images: images,
-          related: related,
-        });
-      }
       setIsLoading(false);
     }, 800);
-
     return () => clearTimeout(timer);
   }, [productId]);
   
-  // Static data not dependent on the product
+  // Find related products
+  useEffect(() => {
+    if (product) {
+      // Find products in the same category, excluding the current product
+      const related = products
+        .filter(p => p.category === product.category && p.id !== product.id)
+        .slice(0, 4);
+      setRelatedProducts(related);
+    }
+  }, [product]);
+  
+  // If product not found
+  if (!product && !isLoading) {
+    return (
+      <div className="container mx-auto px-4 py-16 text-center">
+        <div className="bg-gradient-to-r from-[#176c91] to-[#1a7ca6] p-8 rounded-2xl shadow-xl">
+          <h1 className="text-2xl font-semibold mb-4 text-white">Product Not Found</h1>
+          <p className="text-white/90 mb-8">
+            The product you are looking for does not exist or has been removed.
+          </p>
+          <Button 
+            asChild
+            className="bg-white text-[#176c91] hover:bg-white/90 hover:text-[#176c91] transition-all"
+          >
+            <Link to="/">
+              <ArrowLeft className="mr-2 h-4 w-4" />
+              Back to Home
+            </Link>
+          </Button>
+        </div>
+      </div>
+    );
+  }
+  
+  // Mock data for product details that would typically come from a database
+  const productImages: ProductImage[] = product ? [
+    { src: product.imageSrc, alt: product.name },
+    { src: "https://images.unsplash.com/photo-1581539250439-c96689b516dd?q=80&w=800&auto=format&fit=crop", alt: `${product.name} - Angle 2` },
+    { src: "https://images.unsplash.com/photo-1567538096630-e0c55bd6374c?q=80&w=800&auto=format&fit=crop", alt: `${product.name} - Angle 3` },
+    { src: "https://images.unsplash.com/photo-1550226891-ef816aed4a98?q=80&w=800&auto=format&fit=crop", alt: `${product.name} - Detail` },
+  ] : [];
+  
   const colors: ProductColor[] = [
     { name: "Blue", value: "#176c91" },
     { name: "Red", value: "#ea252b" },
@@ -111,71 +129,22 @@ export function ProductDetailPage() {
     );
   }
   
-  if (!resolvedData) { // Covers both product not found and initial state after loading
-    return (
-      <div className="container mx-auto px-4 py-16 text-center">
-        <div className="bg-gradient-to-r from-[#176c91] to-[#1a7ca6] p-8 rounded-2xl shadow-xl">
-          <h1 className="text-2xl font-semibold mb-4 text-white">Product Not Found</h1>
-          <p className="text-white/90 mb-8">
-            The product you are looking for does not exist or has been removed.
-          </p>
-          <Button 
-            asChild
-            className="bg-white text-[#176c91] hover:bg-white/90 hover:text-[#176c91] transition-all"
-          >
-            <Link to="/">
-              <ArrowLeft className="mr-2 h-4 w-4" />
-              Back to Home
-            </Link>
-          </Button>
-        </div>
-      </div>
-    );
-  }
-
-  // Destructure from resolvedData once it's confirmed to exist
-  const { details: product, images: rawProductImages, related: rawRelatedProducts } = resolvedData;
-
-  // Ensure productImages and relatedProducts are always arrays
-  const productImages = Array.isArray(rawProductImages) ? rawProductImages : [];
-  const relatedProducts = Array.isArray(rawRelatedProducts) ? rawRelatedProducts : [];
-
-  // Calculate a safe image index for the current render
-  let displayActiveImage = 0;
-  if (productImages.length > 0) {
-    const currentActiveImage = Math.min(activeImage, productImages.length - 1);
-    displayActiveImage = Math.max(0, currentActiveImage);
+  if (!product) {
+    return null; // This shouldn't happen due to the earlier check, but TypeScript needs it
   }
 
   // Get back link based on product category
   const getCategoryLink = () => {
-    if (!product) return '/';
     const categorySlug = product.category.toLowerCase().replace(/\s+/g, '-');
     return `/category/${categorySlug}`;
   };
-  
-  // Image navigation functions
-  const handlePrevImage = () => {
-    if (productImages.length === 0) return;
-    setActiveImage((prev) => 
-      (prev - 1 + productImages.length) % productImages.length
-    );
-  };
-  
-  const handleNextImage = () => {
-    if (productImages.length === 0) return;
-    setActiveImage((prev) => 
-      (prev + 1) % productImages.length
-    );
-  };
-
-  return (
+    return (
     <div>
       {/* Hero product banner */}
       <div 
         className="w-full bg-gradient-to-r from-[#176c91] to-[#1a7ca6] py-12 mb-12"
         style={{
-          backgroundImage: `url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.05'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/g%3E%3C/svg%3E")`,
+          backgroundImage: `url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.05'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")`,
         }}
       >
         <div className="container mx-auto px-4">
@@ -229,67 +198,43 @@ export function ProductDetailPage() {
                 )}
               </div>
               <div className="w-full h-full rounded-xl overflow-hidden">
-                {productImages.length > 0 ? (
-                  <motion.img
-                    src={productImages[displayActiveImage]?.src}
-                    alt={productImages[displayActiveImage]?.alt || product.name || "Product image"}
-                    className="w-full h-full object-cover object-center"
-                    initial={{ scale: 1 }}
-                    whileHover={{ scale: 1.05 }}
-                    transition={{ duration: 0.4 }}
-                  />
-                ) : (
-                  <div className="w-full h-full flex items-center justify-center bg-gray-100">
-                    <p className="text-gray-500">No image available</p>
-                  </div>
-                )}
+                <motion.img
+                  src={productImages[activeImage].src}
+                  alt={productImages[activeImage].alt}
+                  className="w-full h-full object-cover object-center"
+                  initial={{ scale: 1 }}
+                  whileHover={{ scale: 1.05 }}
+                  transition={{ duration: 0.4 }}
+                />
               </div>
-              {productImages.length > 0 && (
-                <div className="absolute bottom-4 left-4 flex gap-2">
-                  <button 
-                    onClick={handlePrevImage} 
-                    className="p-2 bg-white rounded-full shadow-md hover:bg-gray-100 transition"
-                  >
-                    <ArrowLeft className="h-5 w-5 text-[#176c91]" />
-                  </button>
-                  <button 
-                    onClick={handleNextImage} 
-                    className="p-2 bg-white rounded-full shadow-md hover:bg-gray-100 transition"
-                  >
-                    <ArrowRight className="h-5 w-5 text-[#176c91]" />
-                  </button>
-                </div>
-              )}
             </div>
             
             {/* Image thumbnails */}
-            {productImages.length > 1 && (
-              <div className="flex gap-4 justify-center">
-                {productImages.map((image, index) => (
-                  <button
-                    key={index}
-                    onClick={() => setActiveImage(index)}
-                    className={cn(
-                      "relative w-20 h-20 rounded-lg overflow-hidden transition-all duration-300",
-                      displayActiveImage === index 
-                        ? "ring-4 ring-[#176c91] shadow-lg" 
-                        : "ring-2 ring-transparent hover:ring-[#176c91]/50 shadow"
-                    )}
-                  >
-                    <img 
-                      src={image.src} 
-                      alt={image.alt} 
-                      className="w-full h-full object-cover object-center" 
-                    />
-                    {displayActiveImage === index && (
-                      <div className="absolute inset-0 bg-[#176c91]/10 flex items-center justify-center">
-                        <Eye className="h-5 w-5 text-white shadow" />
-                      </div>
-                    )}
-                  </button>
-                ))}
-              </div>
-            )}
+            <div className="flex gap-4 justify-center">
+              {productImages.map((image, index) => (
+                <button
+                  key={index}
+                  onClick={() => setActiveImage(index)}
+                  className={cn(
+                    "relative w-20 h-20 rounded-lg overflow-hidden transition-all duration-300",
+                    activeImage === index 
+                      ? "ring-4 ring-[#176c91] shadow-lg" 
+                      : "ring-2 ring-transparent hover:ring-[#176c91]/50 shadow"
+                  )}
+                >
+                  <img 
+                    src={image.src} 
+                    alt={image.alt} 
+                    className="w-full h-full object-cover object-center" 
+                  />
+                  {activeImage === index && (
+                    <div className="absolute inset-0 bg-[#176c91]/10 flex items-center justify-center">
+                      <Eye className="h-5 w-5 text-white shadow" />
+                    </div>
+                  )}
+                </button>
+              ))}
+            </div>
           </motion.div>
 
           {/* Product info */}
@@ -420,7 +365,7 @@ export function ProductDetailPage() {
               <div className="flex flex-col sm:flex-row gap-4">
                 <Button 
                   className="flex-1 bg-[#176c91] hover:bg-[#176c91]/90 text-white rounded-lg py-6 text-lg font-semibold shadow-lg"
-                >
+                ></Button>
                   <ArrowRight className="mr-2 h-5 w-5" />
                   View in Showroom
                 </Button>
@@ -449,7 +394,7 @@ export function ProductDetailPage() {
         
         {/* Related products */}
         {relatedProducts.length > 0 && (
-          <div className="mt-24">
+          <div className="mt-24"></div>
             <div className="flex items-center justify-between mb-10">
               <div className="relative">
                 <h2 className="text-2xl font-bold text-gray-800">More from this collection</h2>
