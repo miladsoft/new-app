@@ -1,6 +1,6 @@
 import { useParams } from 'react-router-dom';
 import { Section } from './ui/section';
-import { ProductCard, ProductProps } from './ui/product-card';
+import { ProductCard } from './ui/product-card';
 import { products } from './data/products';
 import { motion } from 'framer-motion';
 

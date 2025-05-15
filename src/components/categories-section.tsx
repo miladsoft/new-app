@@ -1,6 +1,6 @@
 import { Section } from "./ui/section";
 import { cn } from "@/lib/utils";
-import { ArrowRight, ChevronRight, Sparkles } from "lucide-react";
+import { ArrowRight, Sparkles } from "lucide-react";
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 

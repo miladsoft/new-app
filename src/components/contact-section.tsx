@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Section } from "./ui/section";
 import { Button } from "./ui/button";
-import { Mail, Phone, MapPin, Send, FileText, Building2, Calendar } from "lucide-react";
+import { Mail, Phone, MapPin, Send, FileText } from "lucide-react";
 import { useLanguage } from "@/contexts/language-context";
 
 interface ContactSectionProps {
