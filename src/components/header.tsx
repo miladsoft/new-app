@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Menu, X, Search, Grid2X2, Phone, Languages } from "lucide-react";
+import { Menu, X, Search, Grid2X2, Phone } from "lucide-react";
 import { ThemeToggle } from "./theme-toggle";
 import { LanguageToggle } from "./language-toggle";
 import { cn } from "../lib/utils";
@@ -66,13 +66,13 @@ export function Header({ className }: HeaderProps) {
           </div>          {/* Desktop Navigation */}
           <nav className="hidden lg:flex items-center justify-center lg:w-1/3">
             <div className="flex items-center space-x-6">
-              <Link to="/" className="font-medium text-gray-700 hover:text-[#ea252b] transition-colors duration-200">{t("nav.home")}</Link>
+              <Link to="/" className="font-medium text-gray-700 dark:text-gray-200 hover:text-[#ea252b] transition-colors duration-200">{t("nav.home")}</Link>
               
               {/* Categories dropdown */}
               <div className="relative" data-category-menu>
                 <button 
                   onClick={() => setCategoryMenuOpen(!categoryMenuOpen)}
-                  className="font-medium text-gray-700 hover:text-[#176c91] transition-colors duration-200 flex items-center gap-1"
+                  className="font-medium text-gray-700 dark:text-gray-200 hover:text-[#176c91] transition-colors duration-200 flex items-center gap-1"
                   aria-expanded={categoryMenuOpen}
                   aria-haspopup="true"
                 >
@@ -94,13 +94,13 @@ export function Header({ className }: HeaderProps) {
                 </button>
                 
                 {categoryMenuOpen && (
-                  <div className="absolute z-50 mt-2 w-56 rounded-xl shadow-lg bg-white border border-[#176c91]/10">
+                  <div className="absolute z-50 mt-2 w-56 rounded-xl shadow-lg bg-white dark:bg-gray-800 border border-[#176c91]/10 dark:border-[#176c91]/30">
                     <div className="p-2" role="menu" aria-orientation="vertical">
                       {categories.map((category) => (
                         <Link
                           key={category.name}
                           to={category.href}
-                          className="block px-4 py-2 text-sm text-gray-700 hover:text-[#176c91] hover:bg-[#176c91]/5 rounded-lg transition-colors duration-200"
+                          className="block px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:text-[#176c91] dark:hover:text-[#176c91] hover:bg-[#176c91]/5 dark:hover:bg-[#176c91]/20 rounded-lg transition-colors duration-200"
                           role="menuitem"
                           onClick={() => setCategoryMenuOpen(false)}
                         >
@@ -108,7 +108,7 @@ export function Header({ className }: HeaderProps) {
                         </Link>
                       ))}
                     </div>
-                    <div className="p-2 border-t border-[#176c91]/10">
+                    <div className="p-2 border-t border-[#176c91]/10 dark:border-[#176c91]/30">
                       <Link
                         to="/categories"
                         className="flex items-center justify-center gap-2 px-4 py-2 text-sm text-white bg-[#ea252b] rounded-lg hover:bg-[#ea252b]/90 transition-colors"
@@ -122,11 +122,11 @@ export function Header({ className }: HeaderProps) {
                 )}
               </div>
               
-              <Link to="/projects" className="font-medium text-gray-700 hover:text-[#ea252b] transition-colors duration-200">{t("nav.projects")}</Link>
-              <a href="#about" className="font-medium text-gray-700 hover:text-[#ea252b] transition-colors duration-200">{t("nav.about")}</a>
-              <a href="#contact" className="font-medium text-gray-700 hover:text-[#176c91] transition-colors duration-200">{t("nav.contact")}</a>
+              <Link to="/projects" className="font-medium text-gray-700 dark:text-gray-200 hover:text-[#ea252b] transition-colors duration-200">{t("nav.projects")}</Link>
+              <a href="#about" className="font-medium text-gray-700 dark:text-gray-200 hover:text-[#ea252b] transition-colors duration-200">{t("nav.about")}</a>
+              <a href="#contact" className="font-medium text-gray-700 dark:text-gray-200 hover:text-[#176c91] transition-colors duration-200">{t("nav.contact")}</a>
             </div>
-          </nav>            {/* Header Actions */}
+          </nav>{/* Header Actions */}
           <div className="flex items-center justify-end space-x-3 lg:w-1/3">
             <Button 
               variant="outline"
@@ -139,8 +139,7 @@ export function Header({ className }: HeaderProps) {
                 <Grid2X2 className="h-[18px] w-[18px]" />
               </Link>
             </Button>
-            
-            <Button
+              <Button
               variant="outline"
               size="icon" 
               aria-label="Search"
@@ -150,20 +149,7 @@ export function Header({ className }: HeaderProps) {
               <Search className="h-[18px] w-[18px]" />
             </Button>
             
-            <Button
-              variant="ghost"
-              size="icon"
-              className="border-[#176c91]/20 hover:bg-[#176c91]/10"
-              onClick={() => {
-                const langToggle = document.querySelector('[data-lang-toggle]');
-                if (langToggle) {
-                  (langToggle as HTMLButtonElement).click();
-                }
-              }}
-              aria-label="Toggle language"
-            >
-              <Languages className="h-[18px] w-[18px]" />
-            </Button>
+            <LanguageToggle className="border-[#176c91]/20 hover:bg-[#176c91]/10" />
             
             <ThemeToggle />
             

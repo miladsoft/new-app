@@ -38,8 +38,9 @@ const translations: Record<Language, Record<string, string>> = {
     
     // About
     "about.title": "Our Story",
-    "about.subtitle": "Leading commercial furnishing in Oman since 2005",
-      // Products
+    "about.subtitle": "Leading commercial furnishing in Oman since 2005",    
+    
+    // Products
     "products.title": "Our Products",
     "products.viewDetails": "View Details",
     "products.category": "Category",

@@ -1,5 +1,5 @@
 import { Button } from "./ui/button";
-import { useLanguage } from "@/contexts/language-context";
+import { useLanguage } from "../contexts/language-context";
 import { Languages } from "lucide-react";
 
 interface LanguageToggleProps {
